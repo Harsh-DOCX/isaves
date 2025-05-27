@@ -1,0 +1,155 @@
+:root{
+    --background-dark: rgb(2,2,46);
+    --background-light: rgb(250, 235, 215);
+    --text-dark: rgb(250, 235, 215);
+    --text-light: rgb(2,2,46);
+    --green: #00ff88;
+    --navbar:#333;
+
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* body */
+body{
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+}
+
+button{
+    color: white;
+    background:linear-gradient(45deg, #00ff88,#08e07b,#16af68);
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    padding: 5px;
+    height: 50px;
+    width: 200px;
+    font-size: 1.5rem;
+    font-family: cursive;
+}
+
+button:hover{
+    background:linear-gradient(45deg,#08e07b,#16af68, #00ff88);
+    transform: scale(1.1);
+}
+
+button:active{
+    transform: scale(0.9);
+}
+
+/* navbar */
+.nav{
+    height: 10dvh;
+    background-color: var(--navbar);
+    border-bottom: solid 5px black;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 20px;
+    color: white;
+    font-size: 2rem;
+}
+
+.nav span{
+    color: var(--green);
+    cursor: pointer;
+}
+
+.feature:hover{
+    text-shadow: 0px 0px 20px var(--green);
+    color: var(--green);
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.feature:active{
+
+    transform: scale(0.8);
+}
+
+/* common for all section */
+section{
+    min-height: 90dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 0px 0px 20px var(--text-dark);
+}
+
+.hidden{
+    display: none;
+}
+
+.main{
+    box-shadow: 0px 0px 10px var(--text-dark);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+}
+
+
+input, select{
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    border-bottom: solid 2px var(--background-light);
+    color: var(--text-dark);
+    font-family: cursive;
+}
+
+option{
+    font-family: cursive;
+}
+
+option:nth-child(even){
+    background-color: #444;
+}
+option:nth-child(odd){
+    background-color: #555;
+}
+
+select{
+    text-align: center;
+}
+
+input:hover, input:focus, select:hover, select:focus{
+    border-radius: 15px;
+    box-shadow: 0px 0px 5px var(--green);
+}
+
+
+/* light mode */
+body.light{
+    background-color: var(--background-light);
+    color: var(--text-light);
+}
+
+.light .main{
+    box-shadow: 0px 0px 10px var(--background-dark);
+}
+.light input, .light select{
+    color: var(--text-light);
+    border-bottom: solid 2px var(--text-light);
+}
+
+.light option{
+    color: var(--text-dark);
+}
