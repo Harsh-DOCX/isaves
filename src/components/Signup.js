@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const userCredential = JSON.parse(localStorage.getItem("userCredentials")) || {
-    password: "harsh",
-    teacher: "harsh",
-    school: "harsh"
+    password: "",
+    teacher: "",
+    school: ""
 };
 
 export default function Signup() {
