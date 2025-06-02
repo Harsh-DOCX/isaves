@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/isaves/static/css/main.2893d01f.css",
-    "main.js": "/isaves/static/js/main.d8398c5c.js",
+    "main.js": "/isaves/static/js/main.8ca3620b.js",
     "static/js/453.206cc80c.chunk.js": "/isaves/static/js/453.206cc80c.chunk.js",
     "index.html": "/isaves/index.html",
     "main.2893d01f.css.map": "/isaves/static/css/main.2893d01f.css.map",
-    "main.d8398c5c.js.map": "/isaves/static/js/main.d8398c5c.js.map",
+    "main.8ca3620b.js.map": "/isaves/static/js/main.8ca3620b.js.map",
     "453.206cc80c.chunk.js.map": "/isaves/static/js/453.206cc80c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2893d01f.css",
-    "static/js/main.d8398c5c.js"
+    "static/js/main.8ca3620b.js"
   ]
 }
