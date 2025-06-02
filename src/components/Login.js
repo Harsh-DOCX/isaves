@@ -31,7 +31,7 @@ export default function Login() {
                 result.style.color = "green";
                 setTimeout(() => {
                     Navigate("/show-passwords")
-                }, 4000);
+                }, 2500);
             }
             else {
                 result.textContent = "Invalid password";

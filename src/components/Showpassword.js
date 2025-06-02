@@ -44,7 +44,7 @@ export default function Showpassword() {
                     <div className={`password${index} passwordContainer`} key={index}>
                         <div className="imgHolder">
                             <img
-                                src={`/images/${item.platform}.png`}
+                                src={`./images/${item.platform}.png`}
                                 alt={item.platform}
                                 className="img"
                             />

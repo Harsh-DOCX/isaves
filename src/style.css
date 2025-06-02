@@ -99,7 +99,8 @@ select {
     background-color: transparent;
     border-bottom: solid 2px var(--background-light);
     color: var(--text-dark);
-    font-family: cursive;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.5rem;
 }
 
 input:focus,
@@ -150,76 +151,15 @@ select {
     }
 }
 
-.password-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 1rem;
-    border-radius: 1rem;
-    width: 98vw; /* Full device width */
-    margin: 0;
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-left: 2px solid var(--green);
-    border-right: 2px solid var(--green);
-}
-
-
-.password-container:hover {
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-}
-
-.img-holder img {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    background-color: #333;
-    object-fit: cover;
-}
-
-.password-holder {
-    flex-grow: 1;
-    margin-left: 1rem;
-    text-align: left;
-    color: var(--text-dark);
-}
-
-.password-holder h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: var(--text-dark);
-}
-
-.password-holder h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: var(--green);
-    opacity: 0.9;
-}
-
-.visible i {
-    font-size: 1.5rem;
-    color: var(--green);
-    cursor: pointer;
-    padding: 0 1rem;
-}
-
-.remove .delete-button {
-    font-size: 1rem;
-    padding: 8px 14px;
-    color: white;
-    background: red;
-
-}
-
-
-.allPasswordContainer{
+.allPasswordContainer {
     width: 100vw;
     padding: 2rem 4rem;
+    box-sizing: border-box;
 }
-.passwordContainer{
+
+.passwordContainer {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     height: 10vh;
@@ -228,32 +168,92 @@ select {
     margin-top: 10px;
     border-radius: 20px;
     padding: 10px;
+    transition: transform 0.3s ease;
+    flex-wrap: wrap;
 }
-.passwordContainer:hover{
+
+.passwordContainer:hover {
     transform: scale(1.05);
 }
-.passwordContainer button{
+
+.passwordContainer button {
     background: red;
     color: white;
     height: 80%;
     font-family: 'Courier New', Courier, monospace;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
-#showButton:hover{
+#showButton:hover {
     color: var(--green);
     transform: scale(1.1);
 }
-#showButton:active{
+
+#showButton:active {
     transform: scale(0.9);
 }
-.imgHolder{
+
+.imgHolder {
     height: 90%;
+    max-width: 100px;
+    flex-shrink: 0;
 }
-.img{
+
+.img {
     height: 100%;
     border-radius: 10px;
-
+    object-fit: cover;
 }
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .allPasswordContainer {
+        padding: 1.5rem 2rem;
+    }
+
+    .passwordContainer {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 1rem;
+    }
+
+    .passwordContainer button {
+        width: 100%;
+        margin-top: 0.5rem;
+        height: auto;
+    }
+
+    .imgHolder {
+        width: 100%;
+        height: auto;
+        margin-bottom: 0.5rem;
+    }
+
+    .img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .allPasswordContainer {
+        padding: 1rem;
+    }
+
+    .passwordContainer {
+        padding: 0.75rem;
+    }
+
+    .passwordContainer button {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}
+
 
 .light{
     background: var(--background-light);
