@@ -1,0 +1,100 @@
+.about-wrapper {
+    max-width: 900px;
+    width: 100%;
+    margin-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.about-card:hover {
+    border-color: rgba(0, 243, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+}
+
+/* --- MERN Stack Badges --- */
+.stack-badges {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.badge {
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    background: rgba(10, 10, 20, 0.8);
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+/* Specific colors for MERN */
+.badge.mongo { border-color: #4db33d; color: #4db33d; }
+.badge.mongo:hover { box-shadow: 0 0 10px rgba(77, 179, 61, 0.4); }
+
+.badge.express { border-color: #ffffff; color: #ffffff; }
+.badge.express:hover { box-shadow: 0 0 10px rgba(255, 255, 255, 0.4); }
+
+.badge.react { border-color: #61dafb; color: #61dafb; }
+.badge.react:hover { box-shadow: 0 0 10px rgba(97, 218, 251, 0.4); }
+
+.badge.node { border-color: #68a063; color: #68a063; }
+.badge.node:hover { box-shadow: 0 0 10px rgba(104, 160, 99, 0.4); }
+
+/* --- Developer Section --- */
+.dev-card {
+    background-color: #242424;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #333;
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.dev-card p {
+    color: #b3b3b3;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.github-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.github-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    color: #fff; /* overrides global 'a' hover if needed */
+}
+
+.github-icon {
+    width: 24px;
+    height: 24px;
+}
