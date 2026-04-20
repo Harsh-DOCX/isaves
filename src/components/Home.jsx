@@ -1,10 +1,9 @@
-import LoggedHome from "./LoggedHome";
 import LoggedOutHome from "./LoggedOutHome";
 
-const Home = ({ isLoggedIn }) => {
+const Home = () => {
     return (
         <div className="home-container">
-            {isLoggedIn ? <LoggedHome /> : <LoggedOutHome />}
+            <LoggedOutHome />
         </div>
     );
 };

@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 const Footer = () => {
+    const { user } = useAuth();
+
     return (
         <footer className="footer">
             <div className="footer-content">
@@ -14,9 +17,9 @@ const Footer = () => {
                 <div className="footer-links-group">
                     <h4>NAVIGATION</h4>
                     <ul className="footer-links">
-                        <li><Link to="/home">Home / Vault</Link></li>
+                        <li><Link to={user ? "/vault" : "/"}>{user ? "Vault" : "Home"}</Link></li>
                         <li><Link to="/About-us">About Protocol</Link></li>
-                        <li><Link to="/login">System Login</Link></li>
+                        <li><Link to={user ? "/add-password" : "/login"}>{user ? "Add Credential" : "System Login"}</Link></li>
                     </ul>
                 </div>
 

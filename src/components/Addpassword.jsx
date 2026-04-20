@@ -1,16 +1,28 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import Button from "./ui/Button";
 import Card from "./ui/Card";
 import Input from "./ui/Input";
-import Button from "./ui/Button";
 
 const AddPassword = () => {
     const navigate = useNavigate();
+    const { authFetch } = useAuth();
     const [formData, setFormData] = useState({
         siteName: "",
         username: "",
         password: "",
         notes: "",
+    });
+    const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [siteImage, setSiteImage] = useState({
+        loading: false,
+        imageUrls: [],
+        activeIndex: 0,
+        domain: "",
+        matchType: "",
     });
 
     const handleChange = (e) => {
@@ -18,97 +30,222 @@ const AddPassword = () => {
     };
 
     const handleGenerate = () => {
-        // Generates a random 16-character secure password
         const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~|?><";
+        const randomValues = new Uint32Array(16);
+        window.crypto.getRandomValues(randomValues);
         let newPassword = "";
-        for (let i = 0; i < 16; i++) {
-            newPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+        for (let i = 0; i < randomValues.length; i += 1) {
+            newPassword += chars.charAt(randomValues[i] % chars.length);
         }
         setFormData({ ...formData, password: newPassword });
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-        console.log("Storing new credential:", formData);
-        
-        // After saving, redirect the user back to the dashboard
-        navigate("/home");
+        setError("");
+        setIsSubmitting(true);
+
+        try {
+            await authFetch("/api/vault", {
+                method: "POST",
+                body: JSON.stringify(formData),
+            });
+            navigate("/vault");
+        } catch (saveError) {
+            setError(saveError.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    useEffect(() => {
+        const currentValue = formData.siteName.trim();
+        if (!currentValue) {
+            setSiteImage({
+                loading: false,
+                imageUrls: [],
+                activeIndex: 0,
+                domain: "",
+                matchType: "",
+            });
+            return undefined;
+        }
+
+        const controller = new AbortController();
+        const timer = setTimeout(async () => {
+            setSiteImage((current) => ({ ...current, loading: true }));
+            try {
+                const data = await authFetch(
+                    `/api/site-image?query=${encodeURIComponent(currentValue)}`,
+                    { signal: controller.signal },
+                );
+                setSiteImage({
+                    loading: false,
+                    imageUrls: data.imageUrls || [],
+                    activeIndex: 0,
+                    domain: data.domain || "",
+                    matchType: data.matchType || "",
+                });
+            } catch (loadError) {
+                if (loadError.name !== "AbortError") {
+                    setSiteImage((current) => ({
+                        ...current,
+                        loading: false,
+                        imageUrls: [],
+                    }));
+                }
+            }
+        }, 320);
+
+        return () => {
+            controller.abort();
+            clearTimeout(timer);
+        };
+    }, [authFetch, formData.siteName]);
+
+    const previewUrl = useMemo(
+        () => siteImage.imageUrls[siteImage.activeIndex] || "",
+        [siteImage.activeIndex, siteImage.imageUrls],
+    );
+
+    const handlePreviewImageError = () => {
+        setSiteImage((current) => {
+            if (current.activeIndex >= current.imageUrls.length - 1) {
+                return current;
+            }
+
+            return {
+                ...current,
+                activeIndex: current.activeIndex + 1,
+            };
+        });
     };
 
     return (
-        <Card title="ADD_CREDENTIAL">
-            <form onSubmit={handleSave}>
-                <Input
-                    id="site-input"
-                    label="SYSTEM [SITE NAME / URL]"
-                    name="siteName"
-                    type="text"
-                    value={formData.siteName}
-                    onChange={handleChange}
-                    required
-                />
+        <section className="credential-shell">
+            <div className="credential-intro">
+                <span className="dashboard-badge">Vault Write Console</span>
+                <h1>Store a new credential</h1>
+                <p className="dashboard-subtitle">
+                    Register a site, identifier, and password inside the vault.
+                    Generate a stronger secret on the fly if you do not want to
+                    reuse an existing one.
+                </p>
+                <div className="credential-tips">
+                    <div className="tip-card">
+                        <strong>Use unique passwords</strong>
+                        <span>Keep each site isolated from every other login.</span>
+                    </div>
+                    <div className="tip-card">
+                        <strong>Prefer 16+ characters</strong>
+                        <span>The built-in generator already follows that baseline.</span>
+                    </div>
+                </div>
+            </div>
 
-                <Input
-                    id="username-input"
-                    label="IDENTIFIER [USERNAME / EMAIL]"
-                    name="username"
-                    type="text"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                />
-
-                <div style={{ position: "relative", marginBottom: "20px" }}>
+            <Card title="ADD_CREDENTIAL">
+                <form onSubmit={handleSave}>
                     <Input
-                        id="password-input"
-                        label="ACCESS_KEY [PASSWORD]"
-                        name="password"
-                        type="text" // Keeping as text so user can see what gets generated
-                        value={formData.password}
+                        id="site-input"
+                        label="SYSTEM [SITE NAME / URL]"
+                        name="siteName"
+                        type="text"
+                        value={formData.siteName}
                         onChange={handleChange}
                         required
                     />
-                    {/* Inline Generate Button */}
-                    <button
-                        type="button"
-                        onClick={handleGenerate}
-                        style={{
-                            position: "absolute",
-                            right: "8px",
-                            top: "32px",
-                            background: "rgba(0, 243, 255, 0.1)",
-                            color: "#00f3ff",
-                            border: "1px solid #00f3ff",
-                            borderRadius: "4px",
-                            padding: "6px 10px",
-                            cursor: "pointer",
-                            fontSize: "12px",
-                            fontFamily: "'Orbitron', sans-serif",
-                            transition: "all 0.3s ease"
-                        }}
-                        onMouseOver={(e) => e.target.style.background = "rgba(0, 243, 255, 0.3)"}
-                        onMouseOut={(e) => e.target.style.background = "rgba(0, 243, 255, 0.1)"}
-                    >
-                        GENERATE
-                    </button>
+
+                    {formData.siteName.trim() && (
+                        <div className="site-preview-card">
+                            {previewUrl ? (
+                                <img
+                                    src={previewUrl}
+                                    alt={`${formData.siteName} logo`}
+                                    className="site-preview-logo"
+                                    onError={handlePreviewImageError}
+                                />
+                            ) : (
+                                <div className="site-preview-fallback">
+                                    {formData.siteName.trim().charAt(0).toUpperCase() || "S"}
+                                </div>
+                            )}
+                            <div className="site-preview-copy">
+                                <strong>Detected site image</strong>
+                                <span>
+                                    {siteImage.loading
+                                        ? "Resolving best logo..."
+                                        : siteImage.domain
+                                            ? `${siteImage.domain} (${siteImage.matchType})`
+                                            : "Using fallback icon"}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
+                    <Input
+                        id="username-input"
+                        label="IDENTIFIER [USERNAME / EMAIL]"
+                        name="username"
+                        type="text"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <div className="password-generator-wrap">
+                        <Input
+                            id="password-input"
+                            label="ACCESS_KEY [PASSWORD]"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                        <div className="password-action-row">
+                            <button
+                                type="button"
+                                onClick={handleGenerate}
+                                className="inline-generator-btn"
+                            >
+                                Generate
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword((value) => !value)}
+                                className="inline-generator-btn secondary-inline-btn"
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="input-group">
+                        <label htmlFor="notes-input">LOGS [NOTES]</label>
+                        <textarea
+                            id="notes-input"
+                            name="notes"
+                            className="futuristic-input futuristic-textarea"
+                            value={formData.notes}
+                            onChange={handleChange}
+                            rows="4"
+                        />
+                    </div>
+
+                    {error && <p className="form-feedback error">{error}</p>}
+
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "STORING..." : "STORE CREDENTIAL"}
+                    </Button>
+                </form>
+
+                <div className="auth-links credential-links">
+                    <p>
+                        <Link to="/vault">ABORT & RETURN TO VAULT</Link>
+                    </p>
                 </div>
-
-                <Input
-                    id="notes-input"
-                    label="LOGS [NOTES]"
-                    name="notes"
-                    type="text"
-                    value={formData.notes}
-                    onChange={handleChange}
-                />
-
-                <Button type="submit">STORE CREDENTIAL</Button>
-            </form>
-            
-            <div className="auth-links" style={{ marginTop: "20px" }}>
-                <p><Link to="/home">ABORT & RETURN</Link></p>
-            </div>
-        </Card>
+            </Card>
+        </section>
     );
 };
 

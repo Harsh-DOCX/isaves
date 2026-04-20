@@ -20,7 +20,7 @@ const About = () => {
 
                     <div className="feature-card about-card">
                         <div className="feature-icon" style={{ color: "#bc13fe" }}>🛡️</div>
-                        <h3>Encription</h3>
+                        <h3>Encryption</h3>
                         <p>
                             Your data is protected by a robust custom security system designed to resist brute-force attacks and unauthorized access.
                         </p>

@@ -1,85 +1,97 @@
 # iSaves
 
-**iSaves** is a MERN stack web application designed for secure data management. The project is currently in its early development phase, with the foundational frontend structure completed and backend integration planned for the next stage.
+iSaves is a full-stack credential vault built with React + Express + MongoDB.
 
----
+## What it does
 
-## 🚀 Project Status
+- Email/password signup and login
+- Google signup/login using Google Identity Services
+- HttpOnly cookie-based session authentication
+- Encrypted vault storage for saved passwords
+- Password generator and show/hide controls
+- Create, view, copy, and delete vault entries
+- Smart site logo retrieval from entered site name/URL (with typo-tolerant matching + fallback icon)
 
-- **Frontend:** Basic structure and UI components are ready  
-- **Backend & Database:** Logical implementation and database integration are scheduled for the next phase  
+## Tech stack
 
----
+- Frontend: React 19, React Router 6, Testing Library
+- Backend: Node.js, Express 5, MongoDB (Mongoose)
+- Security/auth: JWT, bcrypt, AES-256-GCM encryption, Google ID token verification
 
-## 🛠 Tech Stack
+## Project structure
 
-### Frontend
-- **React (v19.2.4):** Core UI library  
-- **React Router DOM (v7.14.0):** Client-side routing and navigation  
-- **FontAwesome:** Scalable vector icons (Solid, Brands, React integration)  
-- **CSS:** Custom styling for components (Home, Navbar, Auth, About pages)
+- `src/`: React app (pages, auth context, components, tests)
+- `server/`: Express API (`auth`, `vault`, `health`)
+- `public/`: Static frontend assets
 
-### Backend *(Planned)*
-- **Node.js & Express:** Server-side logic  
-- **MongoDB:** Database management  
+## Required environment variables
 
----
+Create a `.env` file in the project root:
 
-## 📁 Project Structure
+```env
+PORT=8000
+MONGODB_URI=mongodb://127.0.0.1:27017/isaves
+JWT_SECRET=change-this-jwt-secret
+ENCRYPTION_SECRET=change-this-encryption-secret
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+FRONTEND_ORIGIN=http://localhost:3000
+REACT_APP_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+REACT_APP_API_URL=http://localhost:8000
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-smtp-username
+SMTP_PASS=your-smtp-password
+SMTP_FROM=noreply@example.com
+PASSWORD_RESET_TTL_MINUTES=10
+```
 
-The frontend is organized into modular components:
+Production note: `MONGODB_URI`, `JWT_SECRET`, `ENCRYPTION_SECRET`, and `GOOGLE_CLIENT_ID` are mandatory and the server will fail fast if they are missing.
 
-- **Components:**  
-  Navbar, Footer, Login, Signup, AddPassword, Recovery, etc.
+## Google auth setup
 
-- **UI Elements:**  
-  Reusable atomic components such as Button, Card, Input, Divider  
+1. Create OAuth credentials in Google Cloud Console.
+2. Add your frontend origin to **Authorized JavaScript origins**.
+3. Set `GOOGLE_CLIENT_ID` in backend `.env`.
+4. Set `REACT_APP_GOOGLE_CLIENT_ID` in frontend environment.
+5. Do not commit Google client secrets to git.
 
-- **Context:**  
-  AuthContext for managing user sessions and global state  
+## Available scripts
 
-- **Assets:**  
-  Dedicated CSS files for styling different pages  
+- `npm start` - start React app at `http://localhost:3000`
+- `npm run server` - start Express API at `http://localhost:8000`
+- `npm test` - run frontend test suite
+- `npm run build` - create production build
 
----
+## API summary
 
-## ⚙️ Available Scripts
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `POST /api/auth/google`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+- `GET /api/vault`
+- `POST /api/vault`
+- `DELETE /api/vault/:entryId`
+- `GET /api/health`
+- `GET /api/site-image?query=<site name or url>` (auth required)
 
-In the project directory, you can run:
+## Site logo detection
 
-### `npm start`
-Runs the app in development mode.  
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+When adding a credential (and when viewing vault entries), iSaves now tries to
+resolve and render a site logo automatically from the entered `siteName`.
 
----
+- Accepts either a URL/domain (`https://github.com`, `github.com`) or plain name (`github`)
+- Uses typo-tolerant matching for common sites (`gogle` -> `google.com`)
+- Returns multiple fallback image URLs so UI can recover if one provider fails
+- Falls back to a generated placeholder if no logo is found
 
-### `npm test`
-Launches the test runner in interactive watch mode.
+## Testing
 
----
+`src/App.test.js` includes flows for:
 
-### `npm run build`
-Builds the app for production to the `build` folder.  
-Optimizes the build for best performance.
-
----
-
-### `npm run eject`
-> ⚠️ **Note:** This is a one-way operation.
-
-Ejects the app configuration (Webpack, Babel, ESLint, etc.) for full control.
-
----
-
-## 📝 Future Roadmap
-
-- Implementation of Express.js server routes  
-- MongoDB schema design for user accounts and saved data  
-- Full integration of AuthContext with backend authentication  
-- Secure password and data encryption logic  
-
----
-
-## 📌 Author
-
-Developed by **Harsh**
+- Root public landing render
+- Signup and protected vault redirect
+- Login, vault create/read/delete, and logout redirect to home
