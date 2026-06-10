@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/isaves/static/css/main.0baf2495.css",
+    "main.js": "/isaves/static/js/main.a1e05ecf.js",
+    "static/js/453.0e0e9e52.chunk.js": "/isaves/static/js/453.0e0e9e52.chunk.js",
+    "index.html": "/isaves/index.html",
+    "main.0baf2495.css.map": "/isaves/static/css/main.0baf2495.css.map",
+    "main.a1e05ecf.js.map": "/isaves/static/js/main.a1e05ecf.js.map",
+    "453.0e0e9e52.chunk.js.map": "/isaves/static/js/453.0e0e9e52.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0baf2495.css",
+    "static/js/main.a1e05ecf.js"
+  ]
+}
