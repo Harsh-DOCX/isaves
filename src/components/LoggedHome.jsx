@@ -3,6 +3,14 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { useDialog } from "./ui/DialogProvider";
 
+const RECOVERY_QUESTIONS = [
+    "What was the name of your first pet?",
+    "What city were you born in?",
+    "What is your mother's maiden name?",
+    "What was the name of your first school?",
+    "What is your favorite book or movie?",
+];
+
 export default function LoggedHome() {
     const { authFetch, updateProfile, user } = useAuth();
     const { showAlert, showConfirm } = useDialog();
@@ -15,6 +23,8 @@ export default function LoggedHome() {
         username: user.username || "",
         mobileNumber: user.mobileNumber || "",
         personalInfo: user.personalInfo || "",
+        recoveryQuestion: user.recoveryQuestion || "",
+        recoveryAnswer: "",
     });
     const [siteImageMap, setSiteImageMap] = useState({});
     const [profileSaving, setProfileSaving] = useState(false);
@@ -40,6 +50,8 @@ export default function LoggedHome() {
             username: user.username || "",
             mobileNumber: user.mobileNumber || "",
             personalInfo: user.personalInfo || "",
+            recoveryQuestion: user.recoveryQuestion || "",
+            recoveryAnswer: "",
         });
     }, [user]);
 
@@ -291,6 +303,30 @@ export default function LoggedHome() {
                             value={profileForm.personalInfo}
                             onChange={handleProfileChange}
                             placeholder="Add personal info or notes"
+                        />
+                        <label htmlFor="profile-recovery-question">Recovery Question</label>
+                        <select
+                            id="profile-recovery-question"
+                            name="recoveryQuestion"
+                            value={profileForm.recoveryQuestion}
+                            onChange={handleProfileChange}
+                            className="profile-input"
+                        >
+                            <option value="">Select a security question</option>
+                            {RECOVERY_QUESTIONS.map((q, index) => (
+                                <option key={index} value={q}>
+                                    {q}
+                                </option>
+                            ))}
+                        </select>
+                        <label htmlFor="profile-recovery-answer">Recovery Answer</label>
+                        <input
+                            id="profile-recovery-answer"
+                            name="recoveryAnswer"
+                            type="text"
+                            value={profileForm.recoveryAnswer}
+                            onChange={handleProfileChange}
+                            placeholder="Answer to your recovery question (leave empty to keep current)"
                         />
                         {profileMessage && (
                             <p className="form-feedback success">{profileMessage}</p>

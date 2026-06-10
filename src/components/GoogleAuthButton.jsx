@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_ID =
+    process.env.REACT_APP_GOOGLE_CLIENT_ID ||
+    (window.__APP_CONFIG__ && window.__APP_CONFIG__.REACT_APP_GOOGLE_CLIENT_ID) ||
+    "";
 const SCRIPT_ID = "google-identity-services-script";
 
 const loadGoogleScript = () =>

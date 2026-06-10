@@ -8,7 +8,10 @@ import {
 
 export const AuthContext = createContext();
 
-const API_BASE = process.env.REACT_APP_API_URL || "";
+const API_BASE =
+    process.env.REACT_APP_API_URL ||
+    (window.__APP_CONFIG__ && window.__APP_CONFIG__.REACT_APP_API_URL) ||
+    "";
 
 const parseError = async (response) => {
     try {
