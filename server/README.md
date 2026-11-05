@@ -109,6 +109,11 @@ GOOGLE_CLIENT_ID=your_google_client_id
 FRONTEND_ORIGIN=http://localhost:3000
 ```
 
+For production, set `FRONTEND_ORIGIN` to the exact deployed frontend origin
+(for example, `https://isaves.netlify.app`). Production authentication cookies
+use `SameSite=None; Secure` so browsers can send them with credentialed API
+requests from the separately hosted frontend.
+
 ---
 
 ## 📦 Installation

@@ -51,7 +51,7 @@ const issueToken = (user) =>
 const authCookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: "lax",
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 12 * 60 * 60 * 1000,
     path: "/",
 };
@@ -64,7 +64,7 @@ const clearAuthCookie = (res) => {
     res.clearCookie(TOKEN_COOKIE, {
         httpOnly: true,
         secure: isProduction,
-        sameSite: "lax",
+        sameSite: isProduction ? "none" : "lax",
         path: "/",
     });
 };
