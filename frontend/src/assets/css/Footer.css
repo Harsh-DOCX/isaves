@@ -1,0 +1,75 @@
+/* --- Futuristic Footer --- */
+.footer {
+    background:
+        linear-gradient(180deg, rgba(5, 12, 20, 0.94), rgba(3, 9, 15, 0.98));
+    color: #ffffff;
+    border-top: 1px solid rgba(110, 206, 255, 0.12);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+    font-family: "Rajdhani", sans-serif;
+    padding: 3rem 2rem 1rem;
+    margin-top: auto; /* Pushes footer to the bottom */
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1000px;
+    margin: 0 auto;
+    gap: 2rem;
+}
+
+.footer-brand h2 {
+    font-family: "Orbitron", sans-serif;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.footer-brand p {
+    color: #8ea7be;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+.footer-links-group h4 {
+    color: #93e6ff;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-links a {
+    color: #b4cade;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.footer-links a:hover {
+    color: #e7f7ff;
+    text-shadow: 0 0 8px rgba(111, 224, 255, 0.2);
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 3rem;
+    color: #6f8aa0;
+    font-size: 0.85rem;
+    position: relative;
+}
+
+/* Tiny visual flair matching your auth card */
+.scanline-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(111, 224, 255, 0.3), transparent);
+    width: 100%;
+    margin-top: 1rem;
+}

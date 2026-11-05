@@ -1,0 +1,147 @@
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(5, 12, 20, 0.78);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(110, 206, 255, 0.14);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    font-family: "Rajdhani", sans-serif;
+}
+
+.navbar-logo a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    font-family: "Orbitron", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #eef8ff;
+    text-transform: uppercase;
+}
+
+.navbar-links {
+    display: flex;
+    list-style: none;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.navbar-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 102px;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    color: #b7cbdd;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.navbar-links a:hover {
+    background: rgba(0, 194, 255, 0.12);
+    color: #f5fbff;
+    transform: translateY(-1px);
+}
+
+.navbar-auth,
+.guest-actions,
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.username {
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #d7e7f4;
+    font-size: 0.95rem;
+}
+
+.auth-btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #0fb8ff, #2272ff);
+    color: white;
+    box-shadow: 0 14px 34px rgba(19, 120, 255, 0.25);
+}
+
+.signup-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(110, 206, 255, 0.25);
+    color: #97e4ff;
+}
+
+.signup-btn:hover,
+.login-btn:hover,
+.logout-btn:hover {
+    transform: translateY(-1px);
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 94, 126, 0.35);
+    color: #ff8da4;
+}
+
+@media (max-width: 960px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .navbar {
+        padding: 1rem;
+    }
+
+    .navbar-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        border-radius: 20px;
+    }
+
+    .navbar-links a {
+        min-width: 0;
+        flex: 1 1 120px;
+    }
+
+    .guest-actions,
+    .user-profile {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
