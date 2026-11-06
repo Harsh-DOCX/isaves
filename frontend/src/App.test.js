@@ -92,6 +92,11 @@ const createApiMock = () => {
             return jsonResponse(200, { user: currentUser });
         }
 
+        if (path === "/api/auth/profile" && method === "PUT") {
+            currentUser = { ...currentUser, ...JSON.parse(options.body) };
+            return jsonResponse(200, { user: currentUser });
+        }
+
         if (path === "/api/auth/logout" && method === "POST") {
             currentUser = null;
             return Promise.resolve({ ok: true, status: 204 });
@@ -197,6 +202,17 @@ test("allows signup and redirects to the protected vault", async () => {
 
     expect(await screen.findByRole("heading", { name: /your secure vault/i })).toBeInTheDocument();
     expect(await screen.findByText(/operator harsh is authenticated/i)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /save profile/i })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: /^profile$/i }));
+    expect(await screen.findByRole("heading", { name: /your operator profile/i })).toBeInTheDocument();
+
+    const profileUsernameInput = screen.getByLabelText("Username");
+    await user.clear(profileUsernameInput);
+    await user.type(profileUsernameInput, "UpdatedHarsh");
+    await user.click(screen.getByRole("button", { name: /save profile/i }));
+
+    expect(await screen.findByText(/profile updated successfully/i)).toBeInTheDocument();
 });
 
 test("asks Google signups for a password and recovery details before creating the account", async () => {

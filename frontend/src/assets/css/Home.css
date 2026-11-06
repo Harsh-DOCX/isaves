@@ -474,6 +474,29 @@
     margin-bottom: 1.6rem;
 }
 
+.dashboard-home-grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.profile-view {
+    max-width: 1000px;
+}
+
+.profile-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
+    gap: 1.4rem;
+}
+
+.profile-summary,
+.profile-form-panel {
+    align-self: start;
+}
+
+.profile-form-panel {
+    padding: 1.8rem;
+}
+
 .dashboard-feature-panel,
 .vault-side-panel,
 .tip-card {
@@ -1002,6 +1025,7 @@
 @media (max-width: 1024px) {
     .hero-panel,
     .dashboard-hero-grid,
+    .profile-layout,
     .credential-shell,
     .features-grid,
     .workflow-grid,

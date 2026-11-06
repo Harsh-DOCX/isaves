@@ -16,6 +16,7 @@ import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./components/Profile";
 import Recovery from "./components/Recovery";
 import Signup from "./components/Signup";
 import CookieBanner from "./components/CookieBanner";
@@ -61,6 +62,14 @@ const App = () => {
                         element={(
                             <ProtectedRoute>
                                 <LoggedHome />
+                            </ProtectedRoute>
+                        )}
+                    />
+                    <Route
+                        path="/profile"
+                        element={(
+                            <ProtectedRoute>
+                                <Profile />
                             </ProtectedRoute>
                         )}
                     />

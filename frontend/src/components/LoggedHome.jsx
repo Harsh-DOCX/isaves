@@ -3,32 +3,15 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { useDialog } from "./ui/DialogProvider";
 
-const RECOVERY_QUESTIONS = [
-    "What was the name of your first pet?",
-    "What city were you born in?",
-    "What is your mother's maiden name?",
-    "What was the name of your first school?",
-    "What is your favorite book or movie?",
-];
-
 export default function LoggedHome() {
-    const { authFetch, updateProfile, user } = useAuth();
+    const { authFetch, user } = useAuth();
     const { showAlert, showConfirm } = useDialog();
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [copiedId, setCopiedId] = useState(null);
     const [visibleId, setVisibleId] = useState(null);
-    const [profileForm, setProfileForm] = useState({
-        username: user.username || "",
-        mobileNumber: user.mobileNumber || "",
-        personalInfo: user.personalInfo || "",
-        recoveryQuestion: user.recoveryQuestion || "",
-        recoveryAnswer: "",
-    });
     const [siteImageMap, setSiteImageMap] = useState({});
-    const [profileSaving, setProfileSaving] = useState(false);
-    const [profileMessage, setProfileMessage] = useState("");
 
     useEffect(() => {
         const loadVault = async () => {
@@ -44,16 +27,6 @@ export default function LoggedHome() {
 
         loadVault();
     }, [authFetch]);
-
-    useEffect(() => {
-        setProfileForm({
-            username: user.username || "",
-            mobileNumber: user.mobileNumber || "",
-            personalInfo: user.personalInfo || "",
-            recoveryQuestion: user.recoveryQuestion || "",
-            recoveryAnswer: "",
-        });
-    }, [user]);
 
     useEffect(() => {
         if (entries.length === 0) {
@@ -182,30 +155,6 @@ export default function LoggedHome() {
         });
     };
 
-    const handleProfileChange = (event) => {
-        const { name, value } = event.target;
-        setProfileForm((currentForm) => ({
-            ...currentForm,
-            [name]: value,
-        }));
-    };
-
-    const handleProfileSave = async (event) => {
-        event.preventDefault();
-        setProfileMessage("");
-        setError("");
-        setProfileSaving(true);
-
-        try {
-            await updateProfile(profileForm);
-            setProfileMessage("Profile updated successfully.");
-        } catch (saveError) {
-            setError(saveError.message);
-        } finally {
-            setProfileSaving(false);
-        }
-    };
-
     return (
         <section className="dashboard-view command-deck">
             <header className="dashboard-header">
@@ -225,7 +174,7 @@ export default function LoggedHome() {
                 </div>
             </header>
 
-            <section className="dashboard-hero-grid">
+            <section className="dashboard-hero-grid dashboard-home-grid">
                 <article className="dashboard-feature-panel">
                     <p className="panel-label">Vault Status</p>
                     <div className="vault-status-row">
@@ -257,89 +206,6 @@ export default function LoggedHome() {
                         </div>
                     </div>
                 </article>
-
-                <aside className="vault-side-panel">
-                    <p className="panel-label">Operator Profile</p>
-                    <div className="operator-card">
-                        <span className="operator-avatar">
-                            {user.username.slice(0, 1).toUpperCase()}
-                        </span>
-                        <div>
-                            <h3>{user.username}</h3>
-                            <p>{user.email}</p>
-                            {user.mobileNumber && <p>{user.mobileNumber}</p>}
-                        </div>
-                    </div>
-                    <div className="operator-notes">
-                        <p>
-                            {user.personalInfo ||
-                                "Vault access is optimized for focused, deliberate credential work."}
-                        </p>
-                    </div>
-                    <form className="profile-editor" onSubmit={handleProfileSave}>
-                        <label htmlFor="profile-username">Username</label>
-                        <input
-                            id="profile-username"
-                            name="username"
-                            type="text"
-                            value={profileForm.username}
-                            onChange={handleProfileChange}
-                            required
-                        />
-                        <label htmlFor="profile-mobile">Mobile Number</label>
-                        <input
-                            id="profile-mobile"
-                            name="mobileNumber"
-                            type="tel"
-                            value={profileForm.mobileNumber}
-                            onChange={handleProfileChange}
-                            placeholder="+91 98765 43210"
-                        />
-                        <label htmlFor="profile-info">Personal Info</label>
-                        <textarea
-                            id="profile-info"
-                            name="personalInfo"
-                            rows="3"
-                            value={profileForm.personalInfo}
-                            onChange={handleProfileChange}
-                            placeholder="Add personal info or notes"
-                        />
-                        <label htmlFor="profile-recovery-question">Recovery Question</label>
-                        <select
-                            id="profile-recovery-question"
-                            name="recoveryQuestion"
-                            value={profileForm.recoveryQuestion}
-                            onChange={handleProfileChange}
-                            className="profile-input"
-                        >
-                            <option value="">Select a security question</option>
-                            {RECOVERY_QUESTIONS.map((q, index) => (
-                                <option key={index} value={q}>
-                                    {q}
-                                </option>
-                            ))}
-                        </select>
-                        <label htmlFor="profile-recovery-answer">Recovery Answer</label>
-                        <input
-                            id="profile-recovery-answer"
-                            name="recoveryAnswer"
-                            type="text"
-                            value={profileForm.recoveryAnswer}
-                            onChange={handleProfileChange}
-                            placeholder="Answer to your recovery question (leave empty to keep current)"
-                        />
-                        {profileMessage && (
-                            <p className="form-feedback success">{profileMessage}</p>
-                        )}
-                        <button
-                            type="submit"
-                            className="copy-btn profile-save-btn"
-                            disabled={profileSaving}
-                        >
-                            {profileSaving ? "Saving..." : "Save Profile"}
-                        </button>
-                    </form>
-                </aside>
             </section>
 
             {error && <p className="form-feedback error">{error}</p>}
@@ -445,4 +311,3 @@ export default function LoggedHome() {
         </section>
     );
 }
-

@@ -30,6 +30,11 @@ const Navbar = () => {
                         <Link to="/add-password">Add Credential</Link>
                     </li>
                 )}
+                {isLoggedIn && (
+                    <li>
+                        <Link to="/profile">Profile</Link>
+                    </li>
+                )}
                 <li>
                     <Link to="/About-us">About</Link>
                 </li>
