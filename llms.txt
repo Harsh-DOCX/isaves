@@ -1,0 +1,113 @@
+# iSaves
+
+> iSaves is a full-stack password manager and credential vault built with React on the frontend and Express + MongoDB on the backend. It is designed for secure account creation, sign-in, encrypted credential storage, password recovery, and site metadata lookup.
+
+## Project summary
+- Secure email/password signup and login with JWT-based sessions stored in HTTP-only cookies.
+- Optional Google sign-in flow.
+- Encrypted vault entries using AES-256-GCM before persistence.
+- Password recovery via a recovery question.
+- Create, list, and delete saved credentials.
+- Profile management and site-image suggestions.
+- Security-focused middleware: CORS, Helmet, rate limiting, auth checks.
+
+## Architecture
+- Frontend: React single-page app in `frontend/src/`.
+- Backend: Express API in `server/`.
+- Database: MongoDB via Mongoose models.
+- Auth state: `frontend/src/AuthContext.jsx`.
+- Application routes: `frontend/src/App.js` and route components in `frontend/src/components/`.
+- Server entry points: `server/index.js`, `server/app.js`.
+- Models: `server/models/User.js`, `server/models/VaultEntry.js`.
+- Controllers: `server/controllers/authController.js`, `server/controllers/vaultController.js`, `server/controllers/utilityController.js`.
+- Security helpers: `server/services/securityService.js`.
+
+## Key routes
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/health` | API and database health |
+| POST | `/api/auth/signup` | Create an account |
+| POST | `/api/auth/login` | Sign in |
+| POST | `/api/auth/google` | Google auth |
+| GET | `/api/auth/me` | Current session user |
+| PUT | `/api/auth/profile` | Update profile |
+| POST | `/api/auth/logout` | Sign out |
+| POST | `/api/auth/forgot-password` | Get recovery question |
+| POST | `/api/auth/reset-password` | Reset password |
+| GET | `/api/vault` | List user vault entries |
+| POST | `/api/vault` | Create vault entry |
+| DELETE | `/api/vault/:entryId` | Delete vault entry |
+| GET | `/api/site-image` | Site image lookup |
+
+## Environment configuration
+Create `server/.env` with values like:
+
+```env
+NODE_ENV=development
+PORT=8000
+MONGODB_URI=mongodb://127.0.0.1:27017/isaves
+JWT_SECRET=replace_with_a_long_random_secret
+ENCRYPTION_SECRET=replace_with_a_different_long_random_secret
+FRONTEND_ORIGIN=http://localhost:3000
+```
+
+Create `frontend/.env` with:
+
+```env
+REACT_APP_API_URL=http://localhost:8000
+REACT_APP_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+```
+
+## Local development
+```bash
+cd server
+npm install
+npm run dev
+```
+
+Then in another terminal:
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+The app runs at `http://localhost:3000` and the API at `http://localhost:8000`.
+
+## Build and test
+```bash
+cd frontend
+npm run build
+npm test
+```
+
+## Security notes
+- Keep `.env` files out of version control.
+- Use distinct values for `JWT_SECRET` and `ENCRYPTION_SECRET`.
+- Back up the encryption secret; encrypted entries cannot be recovered without it.
+- Do not expose secrets or production credentials in code or public commits.
+- Use HTTPS and a trusted deployment origin in production.
+
+## Repository layout
+```text
+isaves/
+├── frontend/         # React client
+│   ├── public/       # Static assets copied to build output
+│   ├── src/         # App source
+│   └── package.json
+├── server/           # Express API
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   └── utils/
+├── README.md         # Project overview
+└── .gitignore
+```
+
+## Source links
+- Repository: `https://github.com/Harsh-DOCX/isaves`
+- Product site: `https://isaves-app.vercel.app/`
+- About page: `https://isaves-app.vercel.app/about`

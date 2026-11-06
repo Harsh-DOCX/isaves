@@ -14,9 +14,11 @@ import Home from "./components/Home";
 import LoggedHome from "./components/LoggedHome";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
+import NotFound from "./components/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Recovery from "./components/Recovery";
 import Signup from "./components/Signup";
+import CookieBanner from "./components/CookieBanner";
 
 import "./assets/css/Home.css";
 import "./assets/css/navbar.css";
@@ -25,6 +27,7 @@ import "./assets/css/app.css";
 import "./assets/css/About.css";
 import "./assets/css/Footer.css";
 import "./assets/css/dialog.css";
+import "./assets/css/siteExtras.css";
 
 const LayoutWithNavbar = () => {
     return (
@@ -70,6 +73,7 @@ const App = () => {
                         )}
                     />
                     <Route path="/About-us" element={<About />} />
+                    <Route path="*" element={<NotFound />} />
                 </Route>
 
                 <Route
@@ -90,6 +94,7 @@ const App = () => {
                 />
                 <Route path="/forget-Password" element={<Recovery />} />
             </Routes>
+            <CookieBanner />
         </Router>
     );
 };

@@ -1,0 +1,195 @@
+.cookie-banner {
+    position: fixed;
+    z-index: 1000;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: min(34rem, calc(100vw - 3rem));
+    padding: 1.25rem 1.4rem;
+    color: #e8f8ff;
+    background: linear-gradient(145deg, rgba(10, 28, 43, 0.98), rgba(5, 15, 25, 0.98));
+    border: 1px solid rgba(126, 221, 255, 0.28);
+    border-radius: 16px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.42), 0 0 24px rgba(0, 194, 255, 0.08);
+    font-family: "Rajdhani", sans-serif;
+}
+
+.cookie-banner-copy {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.cookie-banner-label {
+    color: #8fe6ff;
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.cookie-banner-copy p {
+    color: #c1d3e1;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.cookie-banner-button,
+.not-found-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    padding: 0.65rem 1.1rem;
+    color: #04111b;
+    background: linear-gradient(135deg, #9aefff, #4bc7ff);
+    border: 0;
+    border-radius: 999px;
+    font: 700 0.95rem "Rajdhani", sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.cookie-banner-button:hover,
+.not-found-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(75, 199, 255, 0.24);
+}
+
+.cookie-banner-button:focus-visible,
+.not-found-link:focus-visible {
+    outline: 2px solid #e8f8ff;
+    outline-offset: 3px;
+}
+
+.not-found-page {
+    position: relative;
+    display: grid;
+    min-height: min(740px, calc(100vh - 100px));
+    place-items: center;
+    overflow: hidden;
+    padding: 4rem 1.5rem;
+    color: #f0f8ff;
+    background:
+        radial-gradient(circle at 50% 34%, rgba(0, 194, 255, 0.13), transparent 28rem),
+        linear-gradient(180deg, #06111d 0%, #091521 100%);
+    font-family: "Rajdhani", sans-serif;
+    text-align: center;
+}
+
+.not-found-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: min(100%, 38rem);
+    flex-direction: column;
+    align-items: center;
+}
+
+.not-found-visual {
+    position: relative;
+    display: grid;
+    width: min(75vw, 21rem);
+    aspect-ratio: 1;
+    place-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.not-found-orbit {
+    position: absolute;
+    display: block;
+    border: 1px solid rgba(110, 221, 255, 0.2);
+    border-radius: 50%;
+}
+
+.not-found-orbit-outer {
+    inset: 3%;
+    box-shadow: 0 0 48px rgba(44, 177, 255, 0.08), inset 0 0 48px rgba(44, 177, 255, 0.05);
+}
+
+.not-found-orbit-inner {
+    inset: 14%;
+    border-style: dashed;
+    animation: not-found-rotate 40s linear infinite;
+}
+
+.not-found-code {
+    color: #dbf8ff;
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(5.5rem, 19vw, 9.5rem);
+    font-weight: 700;
+    letter-spacing: -0.1em;
+    line-height: 1;
+    text-shadow: 0 0 36px rgba(82, 214, 255, 0.3);
+}
+
+.not-found-signal {
+    position: absolute;
+    bottom: 21%;
+    padding: 0.35rem 0.7rem;
+    color: #8fe6ff;
+    background: #091521;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+}
+
+.not-found-kicker {
+    margin-bottom: 0.7rem;
+    color: #8fe6ff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.not-found-content h1 {
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(1.7rem, 5vw, 2.5rem);
+    line-height: 1.25;
+}
+
+.not-found-description {
+    max-width: 29rem;
+    margin: 1rem 0 1.75rem;
+    color: #a9bfd2;
+    font-size: 1.15rem;
+    line-height: 1.5;
+}
+
+@keyframes not-found-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 540px) {
+    .cookie-banner {
+        right: 1rem;
+        bottom: 1rem;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0.9rem;
+        width: calc(100vw - 2rem);
+        padding: 1.1rem;
+    }
+
+    .cookie-banner-button {
+        align-self: flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .not-found-orbit-inner {
+        animation: none;
+    }
+
+    .cookie-banner-button,
+    .not-found-link {
+        transition: none;
+    }
+}

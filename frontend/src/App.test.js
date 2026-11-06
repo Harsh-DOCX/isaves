@@ -92,6 +92,7 @@ const createApiMock = () => {
 
 beforeEach(() => {
     window.history.pushState({}, "", "/");
+    window.localStorage.clear();
     window.confirm = jest.fn(() => true);
     global.fetch = createApiMock();
 });
@@ -108,6 +109,44 @@ test("renders the public homepage on the root route", async () => {
     );
     expect(screen.getByText(/secure your digital life/i)).toBeInTheDocument();
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+});
+
+test("shows a custom not-found page for unknown routes", async () => {
+    window.history.pushState({}, "", "/this-page-does-not-exist");
+
+    render(
+        <AuthProvider>
+            <App />
+        </AuthProvider>,
+    );
+
+    expect(screen.getByRole("heading", { name: /this page is off the map/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /back to home/i })).toHaveAttribute("href", "/");
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+});
+
+test("dismisses and remembers the cookie notice", async () => {
+    const { unmount } = render(
+        <AuthProvider>
+            <App />
+        </AuthProvider>,
+    );
+
+    expect(screen.getByRole("region", { name: /cookie notice/i })).toBeInTheDocument();
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    await userEvent.click(screen.getByRole("button", { name: /got it/i }));
+
+    expect(screen.queryByRole("region", { name: /cookie notice/i })).not.toBeInTheDocument();
+    expect(window.localStorage.getItem("isaves-cookie-notice-dismissed")).toBe("true");
+
+    unmount();
+    render(
+        <AuthProvider>
+            <App />
+        </AuthProvider>,
+    );
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    expect(screen.queryByRole("region", { name: /cookie notice/i })).not.toBeInTheDocument();
 });
 
 test("allows signup and redirects to the protected vault", async () => {
