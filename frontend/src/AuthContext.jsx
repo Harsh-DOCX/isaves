@@ -84,13 +84,41 @@ export const AuthProvider = ({ children }) => {
         return data.user;
     };
 
-    const loginWithGoogle = async (credential) => {
+    const requestGoogleAuth = async (credential, options = {}) => {
         const data = await request("/api/auth/google", {
             method: "POST",
-            body: JSON.stringify({ credential }),
+            body: JSON.stringify({ credential, ...options }),
         });
 
-        setUser(data.user);
+        if (data.user) {
+            setUser(data.user);
+        }
+
+        return data;
+    };
+
+    const loginWithGoogle = async (credential) => {
+        const data = await requestGoogleAuth(credential);
+        if (!data.user) {
+            throw new Error("Google login could not be completed.");
+        }
+
+        return data.user;
+    };
+
+    const beginGoogleSignup = (credential) =>
+        requestGoogleAuth(credential, { mode: "signup" });
+
+    const completeGoogleSignup = async (credential, signupDetails) => {
+        const data = await requestGoogleAuth(credential, {
+            mode: "signup",
+            ...signupDetails,
+        });
+
+        if (!data.user) {
+            throw new Error("Google signup could not be completed.");
+        }
+
         return data.user;
     };
 
@@ -130,6 +158,8 @@ export const AuthProvider = ({ children }) => {
                 login,
                 signup,
                 loginWithGoogle,
+                beginGoogleSignup,
+                completeGoogleSignup,
                 logout,
                 updateProfile,
                 authFetch,

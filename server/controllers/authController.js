@@ -90,9 +90,18 @@ const googleLogin = async (req, res) => {
         return res.status(500).json({ message: "Google authentication is not configured." });
     }
 
-    const { credential } = req.body;
+    const {
+        credential,
+        mode = "login",
+        password,
+        recoveryQuestion,
+        recoveryAnswer,
+    } = req.body;
     if (!credential) {
         return res.status(400).json({ message: "Google credential is required." });
+    }
+    if (mode !== "login" && mode !== "signup") {
+        return res.status(400).json({ message: "Google authentication mode is invalid." });
     }
 
     const ticket = await googleClient.verifyIdToken({
@@ -107,8 +116,58 @@ const googleLogin = async (req, res) => {
 
     const normalizedEmail = normalizeEmail(payload.email);
     let user = await User.findOne({ email: normalizedEmail });
+    const needsProfileSetup =
+        mode === "signup" &&
+        (!user || !user.recoveryQuestion || !user.recoveryAnswer);
 
-    if (!user) {
+    if (needsProfileSetup) {
+        if (
+            typeof password === "undefined" &&
+            typeof recoveryQuestion === "undefined" &&
+            typeof recoveryAnswer === "undefined"
+        ) {
+            return res.json({ requiresSetup: true, email: normalizedEmail });
+        }
+
+        if (typeof password !== "string" || password.length < 8) {
+            return res
+                .status(400)
+                .json({ message: "Password must be at least 8 characters long." });
+        }
+
+        if (
+            typeof recoveryQuestion !== "string" ||
+            !recoveryQuestion.trim() ||
+            typeof recoveryAnswer !== "string" ||
+            !recoveryAnswer.trim()
+        ) {
+            return res.status(400).json({
+                message: "Recovery question and answer are required.",
+            });
+        }
+
+        const baseUsername =
+            (payload.name || normalizedEmail.split("@")[0] || "user")
+                .replace(/\s+/g, "_")
+                .slice(0, 30) || "user";
+        const suffix = crypto.randomBytes(2).toString("hex");
+
+        const passwordHash = await bcrypt.hash(password, 10);
+        if (user) {
+            user.passwordHash = passwordHash;
+            user.recoveryQuestion = recoveryQuestion.trim();
+            user.recoveryAnswer = hashRecoveryAnswer(recoveryAnswer);
+            await user.save();
+        } else {
+            user = await User.create({
+                username: `${baseUsername}_${suffix}`,
+                email: normalizedEmail,
+                passwordHash,
+                recoveryQuestion: recoveryQuestion.trim(),
+                recoveryAnswer: hashRecoveryAnswer(recoveryAnswer),
+            });
+        }
+    } else if (!user) {
         const baseUsername =
             (payload.name || normalizedEmail.split("@")[0] || "user")
                 .replace(/\s+/g, "_")

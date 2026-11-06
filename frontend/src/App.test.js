@@ -1,7 +1,27 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
 import { AuthProvider } from "./AuthContext";
+import { DialogProvider } from "./components/ui/DialogProvider";
+
+jest.mock("./components/GoogleAuthButton", () => {
+    const React = require("react");
+
+    return {
+        __esModule: true,
+        default: function MockGoogleAuthButton({ mode, onCredential, disabled }) {
+            return React.createElement(
+                "button",
+                {
+                    type: "button",
+                    disabled,
+                    onClick: () => onCredential("test-google-credential"),
+                },
+                mode === "signup" ? "Sign up with Google" : "Sign in with Google",
+            );
+        },
+    };
+});
 
 const jsonResponse = (status, body) =>
     Promise.resolve({
@@ -54,6 +74,24 @@ const createApiMock = () => {
             return jsonResponse(200, { user: currentUser });
         }
 
+        if (path === "/api/auth/google" && method === "POST") {
+            const payload = JSON.parse(options.body);
+            if (payload.mode === "signup" && !payload.password) {
+                return jsonResponse(200, {
+                    requiresSetup: true,
+                    email: "google@example.com",
+                });
+            }
+
+            currentUser = {
+                id: "google-user-1",
+                username: "Google_User",
+                email: "google@example.com",
+                createdAt: new Date().toISOString(),
+            };
+            return jsonResponse(200, { user: currentUser });
+        }
+
         if (path === "/api/auth/logout" && method === "POST") {
             currentUser = null;
             return Promise.resolve({ ok: true, status: 204 });
@@ -90,6 +128,15 @@ const createApiMock = () => {
     });
 };
 
+const renderApp = () =>
+    render(
+        <AuthProvider>
+            <DialogProvider>
+                <App />
+            </DialogProvider>
+        </AuthProvider>,
+    );
+
 beforeEach(() => {
     window.history.pushState({}, "", "/");
     window.localStorage.clear();
@@ -102,11 +149,7 @@ afterEach(() => {
 });
 
 test("renders the public homepage on the root route", async () => {
-    render(
-        <AuthProvider>
-            <App />
-        </AuthProvider>,
-    );
+    renderApp();
     expect(screen.getByText(/secure your digital life/i)).toBeInTheDocument();
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
 });
@@ -114,11 +157,7 @@ test("renders the public homepage on the root route", async () => {
 test("shows a custom not-found page for unknown routes", async () => {
     window.history.pushState({}, "", "/this-page-does-not-exist");
 
-    render(
-        <AuthProvider>
-            <App />
-        </AuthProvider>,
-    );
+    renderApp();
 
     expect(screen.getByRole("heading", { name: /this page is off the map/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /back to home/i })).toHaveAttribute("href", "/");
@@ -126,11 +165,7 @@ test("shows a custom not-found page for unknown routes", async () => {
 });
 
 test("dismisses and remembers the cookie notice", async () => {
-    const { unmount } = render(
-        <AuthProvider>
-            <App />
-        </AuthProvider>,
-    );
+    const { unmount } = renderApp();
 
     expect(screen.getByRole("region", { name: /cookie notice/i })).toBeInTheDocument();
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -140,11 +175,7 @@ test("dismisses and remembers the cookie notice", async () => {
     expect(window.localStorage.getItem("isaves-cookie-notice-dismissed")).toBe("true");
 
     unmount();
-    render(
-        <AuthProvider>
-            <App />
-        </AuthProvider>,
-    );
+    renderApp();
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     expect(screen.queryByRole("region", { name: /cookie notice/i })).not.toBeInTheDocument();
 });
@@ -153,11 +184,7 @@ test("allows signup and redirects to the protected vault", async () => {
     const user = userEvent;
     window.history.pushState({}, "", "/sign-up");
 
-    render(
-        <AuthProvider>
-            <App />
-        </AuthProvider>,
-    );
+    renderApp();
 
     const usernameInput = await screen.findByLabelText(/designation \[username\]/i);
     const emailInput = await screen.findByLabelText(/identifier \[email\]/i);
@@ -172,15 +199,47 @@ test("allows signup and redirects to the protected vault", async () => {
     expect(await screen.findByText(/operator harsh is authenticated/i)).toBeInTheDocument();
 });
 
+test("asks Google signups for a password and recovery details before creating the account", async () => {
+    window.history.pushState({}, "", "/sign-up");
+
+    renderApp();
+
+    await userEvent.click(await screen.findByRole("button", { name: /sign up with google/i }));
+
+    expect(await screen.findByText(/google account:/i)).toHaveTextContent("google@example.com");
+    await userEvent.type(
+        screen.getByLabelText(/new access_key \[password\]/i),
+        "StrongGooglePass123!",
+    );
+    await userEvent.selectOptions(
+        screen.getByLabelText(/recovery_question \[security\]/i),
+        "What city were you born in?",
+    );
+    await userEvent.type(
+        screen.getByLabelText(/recovery_answer \[answer\]/i),
+        "Springfield",
+    );
+    await userEvent.click(screen.getByRole("button", { name: /complete google signup/i }));
+
+    expect(await screen.findByRole("heading", { name: /stored credentials/i })).toBeInTheDocument();
+    const googleRequests = global.fetch.mock.calls.filter(
+        ([url]) => normalizeApiPath(url) === "/api/auth/google",
+    );
+    expect(googleRequests).toHaveLength(2);
+    expect(JSON.parse(googleRequests[1][1].body)).toMatchObject({
+        credential: "test-google-credential",
+        mode: "signup",
+        password: "StrongGooglePass123!",
+        recoveryQuestion: "What city were you born in?",
+        recoveryAnswer: "Springfield",
+    });
+});
+
 test("handles login, create vault entry, delete entry, and logout to home", async () => {
     const user = userEvent;
     window.history.pushState({}, "", "/login");
 
-    render(
-        <AuthProvider>
-            <App />
-        </AuthProvider>,
-    );
+    renderApp();
 
     const loginEmailInput = await screen.findByLabelText(/identifier \[email\]/i);
     const loginPasswordInput = await screen.findByLabelText(/access_key \[password\]/i);
@@ -202,8 +261,10 @@ test("handles login, create vault entry, delete entry, and logout to home", asyn
     expect((await screen.findAllByText("github.com")).length).toBeGreaterThan(0);
 
     await user.click(screen.getByRole("button", { name: /delete/i }));
+    const deleteDialog = await screen.findByRole("dialog");
+    await user.click(within(deleteDialog).getByRole("button", { name: /^delete$/i }));
     await waitFor(() => {
-        expect(screen.queryByText("github.com")).not.toBeInTheDocument();
+        expect(screen.queryAllByText("github.com")).toHaveLength(0);
     });
 
     await user.click(screen.getByRole("button", { name: /logout/i }));

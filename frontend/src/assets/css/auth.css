@@ -68,6 +68,17 @@
     letter-spacing: 1px;
 }
 
+.google-signup-email {
+    margin-bottom: 20px;
+    color: #9fb8d0;
+    text-align: left;
+}
+
+.google-signup-email strong {
+    color: #e8f8ff;
+    overflow-wrap: anywhere;
+}
+
 .futuristic-input {
     width: 100%;
     padding: 13px 15px;
